@@ -13,7 +13,7 @@ import random
 url_list = ['https://www.google.com/maps/preview/review/listentitiesreviews?authuser=0&hl=en&gl=us&pb=!1m2!1y9935909009206584397!2y1653338456928523551!2m2!1i8!2i10!3e1!4m5!3b1!4b1!5b1!6b1!7b1!5m2!1sWCXRX4e6JIXr5gKcnajABA!7e81']
 for i in range(1,50):
     url_list.append('https://www.google.com/maps/preview/review/listentitiesreviews?authuser=0&hl=en&gl=us&pb=!1m2!1y9935909009206584397!2y1653338456928523551!2m2!1i'+str(i)+'8!2i10!3e1!4m5!3b1!4b1!5b1!6b1!7b1!5m2!1sWCXRX4e6JIXr5gKcnajABA!7e81')
-###print(url_list)
+
 c=[]
 username = []
 content = []
@@ -35,29 +35,34 @@ for m in range(len(url_list)):
 df
 df.to_csv('/Users/jiujunzhang/Desktop/HPE_dataset/Massachusetts_General_Hospital.csv',sep='\t', encoding='utf-8', header='true')
 
-###for i in range(3):###set scroll down for 3 times (ASAP website design)
-    ###browser.execute_script('window.scrollTo(0, document.body.scrollHeight)')
-    ###time.sleep(4)
+
 df.head()
+
 # Calculate word count
 df['word_count'] = df['content'].apply(lambda x: len(str(x).split(" ")))
+
 # Calculate character count
 df['char_count'] = df['content'].str.len()
 def avg_word(content):
     words = content.split()
     return (sum(len(word) for word in words) / len(words))
 # Calculate average words
+
 df['avg_word'] = df['content'].apply(lambda x: avg_word(x))
+
 # Import stopwords
 import nltk
 nltk.download('stopwords')
 from nltk.corpus import stopwords
 stop_words = stopwords.words('english')
 df['stopword_coun'] = df['content'].apply(lambda x: len([x for x in x.split() if x in stop_words]))
+
 # Lower case all words
 df['review_lower'] = df['content'].apply(lambda x: " ".join(x.lower() for x in x.split())) 
+
 # Remove Punctuation
 df['review_nopunc'] = df['review_lower'].str.replace('[^\w\s]', '')
+
 # Remove Stopwords
 df['review_nopunc_nostop'] = df['review_nopunc'].apply(lambda x: " ".join(x for x in x.split() if x not in stop_words))
 # Return frequency of values
@@ -65,6 +70,7 @@ freq= pd.Series(" ".join(df['review_nopunc_nostop']).split()).value_counts()[:30
 other_stopwords = ['none','one','would' ]
 df['review_nopunc_nostop_nocommon'] = df['review_nopunc_nostop'].apply(lambda x: "".join(" ".join(x for x in x.split() if x not in other_stopwords)))
 !pip install textblob
+
 # Import textblob
 from textblob import Word
 nltk.download('wordnet')
